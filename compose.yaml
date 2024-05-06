@@ -1,0 +1,14 @@
+services:
+  torch:
+    build: .
+    ipc: host
+    volumes:
+      - ./project:/project
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    working_dir: /project/
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
