@@ -1,2 +1,7 @@
-transformers==2.8.0
-emoji
+accelerate
+bitsandbytes
+datasets==2.13.1
+transformers == 4.31.0
+peft 
+trl
+scipy

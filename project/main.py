@@ -1,13 +1,22 @@
-import torch
-from transformers import BertTokenizer
-import numpy as np 
-import pandas as pd 
+import argparse
+import bitsandbytes as bnb
+from datasets import load_dataset
+from functools import partial
+import os
+from datasets import load_dataset
+from model import *
 
-print('Loading BERT tokenizer...')
-
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-
-print(tokenizer.tokenize("Hello, my dog is cute."), tokenizer.convert_tokens_to_ids(tokenizer.tokenize("Hello, my dog is cute.")))
+# from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
+# from transformers import set_seed, Trainer, TrainingArguments, BitsAndBytesConfig, \
+#     DataCollatorForLanguageModeling, Trainer, TrainingArguments
 
 
+# model_name = "google-bert/bert-base-uncased" 
+model_name = "IMSyPP/hate_speech_en"
+
+bnb_config = create_bnb_config()
+
+print(bnb_config)
+
+model, tokenizer = load_model(model_name, bnb_config)
 
