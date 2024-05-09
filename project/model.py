@@ -1,5 +1,8 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
+import os
+
+token = "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"
 
 def load_model(model_name, bnb_config):
     n_gpus = torch.cuda.device_count()
@@ -8,15 +11,18 @@ def load_model(model_name, bnb_config):
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         quantization_config=bnb_config,
-        device_map="auto", # dispatch efficiently the model on the available ressources
         max_memory = {i: max_memory for i in range(n_gpus)},
+        low_cpu_mem_usage=True,
+        is_decoder=True,
+        
     )
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=True)
+    return model
 
-    # Needed for LLaMA tokenizer
+def load_tokenizer(model_name):
+    tokenizer = AutoTokenizer.from_pretrained(model_name, token=token)
     tokenizer.pad_token = tokenizer.eos_token
+    return tokenizer
 
-    return model, tokenizer
 
 def create_bnb_config():
     bnb_config = BitsAndBytesConfig(
