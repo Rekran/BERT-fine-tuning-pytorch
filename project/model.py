@@ -1,8 +1,12 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
 import os
+from huggingface_hub import login
+from dotenv import load_dotenv
 
-token = "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"
+load_dotenv(dotenv_path = '../.env')
+HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN')
+
 
 def load_model(model_name, bnb_config):
     n_gpus = torch.cuda.device_count()
@@ -12,6 +16,7 @@ def load_model(model_name, bnb_config):
         model_name,
         quantization_config=bnb_config,
         max_memory = {i: max_memory for i in range(n_gpus)},
+        device_map="cuda",
         low_cpu_mem_usage=True,
         is_decoder=True,
         
@@ -19,7 +24,7 @@ def load_model(model_name, bnb_config):
     return model
 
 def load_tokenizer(model_name):
-    tokenizer = AutoTokenizer.from_pretrained(model_name, token=token)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, token = HUGGINGFACE_TOKEN)  
     tokenizer.pad_token = tokenizer.eos_token
     return tokenizer
 
