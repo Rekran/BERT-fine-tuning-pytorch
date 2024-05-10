@@ -4,13 +4,15 @@ import os
 from huggingface_hub import login
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path = '../.env')
+load_dotenv()
 HUGGINGFACE_TOKEN = os.getenv('HUGGINGFACE_TOKEN')
+MAX_MEMORY = os.getenv('MAX_MEMORY')
 
 
 def load_model(model_name, bnb_config):
+
     n_gpus = torch.cuda.device_count()
-    max_memory = f'{4000}MB'
+    max_memory = f'{MAX_MEMORY}MB'
 
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
@@ -21,6 +23,7 @@ def load_model(model_name, bnb_config):
         is_decoder=True,
         
     )
+   
     return model
 
 def load_tokenizer(model_name):
